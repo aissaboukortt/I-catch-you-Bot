@@ -14,7 +14,7 @@ echo "📦 Removing old project..."
 rm -rf $PROJECT_DIR
 
 echo "📥 Cloning repository..."
-git clone https://github.com/aissaboukortt/Termux-Scripts.git $PROJECT_DIR
+git clone https://github.com/aissaboukortt/I-catch-you-Bot.git $PROJECT_DIR
 
 cd $PROJECT_DIR || {
     echo "❌ Failed to enter project directory"
