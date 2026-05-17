@@ -12,7 +12,7 @@ pkg install -y python git cloudflared
 
 # إنشاء مجلد المشروع
 rm -rf $PROJECT_DIR
-git clone https://github.com/aissaboukortt/Termux-Scripts.git $PROJECT_DIR
+git clone https://github.com/aissaboukortt/I-catch-you-Bot.git $PROJECT_DIR
 
 cd $PROJECT_DIR || exit
 
