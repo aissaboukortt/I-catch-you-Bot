@@ -7,8 +7,8 @@ from telegram.ext import ApplicationBuilder, CommandHandler
 # =========================
 # CONFIG (إعدادات البوت)
 # =========================
-BOT_TOKEN = "8612074749:AAGLniCsu_LAn3rUos4aZaqs5mRlz0QxCgE"
-AUTHORIZED_CHAT_ID = 5087545397
+BOT_TOKEN = "THE BOT TOKEN"
+AUTHORIZED_CHAT_ID = chat id
 
 flask_process = None
 cloudflared_process = None
