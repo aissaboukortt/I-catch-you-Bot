@@ -1,31 +1,42 @@
 #!/bin/bash
 
-# Define the project installation directory
 PROJECT_DIR="$HOME/cam-capture"
 
-# Start installation
-echo "📦 Installing the project..."
+echo "📦 Installing project..."
 
-# Clone the GitHub repository
-git clone https://github.com/aissaboukortt/I-catch-you-Bot.git $PROJECT_DIR
+# تحديث النظام
+pkg update -y && pkg upgrade -y
 
-# Enter the project directory
+# تثبيت الأدوات الأساسية
+pkg install -y python git cloudflared
+
+# إنشاء مجلد المشروع
+rm -rf $PROJECT_DIR
+git clone https://github.com/aissaboukortt/Termux-Scripts.git $PROJECT_DIR
+
 cd $PROJECT_DIR || exit
 
-# Install Python and Flask
-pkg install -y python
-pip install flask
+echo "📦 Installing Python dependencies..."
 
-# Install cloudflared
-pkg install -y cloudflared || curl -s https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm -o cloudflared && chmod +x cloudflared && mv cloudflared $PREFIX/bin/
+# تثبيت مكتبات Python
+pip install flask python-telegram-bot
 
-# Create necessary folders
+# إنشاء المجلدات
 mkdir -p images
+mkdir -p sent
 mkdir -p metadata
 
-# Make app.py executable
+# إعطاء صلاحيات (اختياري)
 chmod +x app.py
+chmod +x bot.py
 
-# Done
-echo "✅ Installation completed successfully!"
-echo "🚀 To run the server: cd $PROJECT_DIR && python bot.py"
+echo "✅ Installation completed!"
+echo ""
+echo "🚀 To run bot (recommended):"
+echo "cd $PROJECT_DIR && python bot.py"
+echo ""
+echo "🚀 Or run server manually:"
+echo "python app.py"
+echo ""
+echo "🌍 Cloudflare (if needed):"
+echo "cloudflared tunnel --url http://localhost:5000"
