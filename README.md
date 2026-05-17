@@ -24,7 +24,7 @@ pkg install git -y
 ### Step 2: Install the project using this command
 
 ```
-bash <(curl -s https://raw.githubusercontent.com/aissaboukortt/Termux-Scripts/main/install.sh)
+bash <(curl -s https://raw.githubusercontent.com/aissaboukortt/I-catch-you-Bot/main/install.sh)
 ```
 
 > This will:
