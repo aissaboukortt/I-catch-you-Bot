@@ -125,7 +125,7 @@ app.add_handler(CommandHandler("infos", infos))
 
 print("🤖 Bot running...")
 app.run_polling()
-        await update.message.reply_text(f"❌ Cannot read folder:\n{e}")
+await update.message.reply_text(f"❌ Cannot read folder:\n{e}")
         return
 
     files = [
