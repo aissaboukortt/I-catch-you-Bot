@@ -42,6 +42,7 @@ async def start(update, context):
     if update.effective_chat.id != AUTHORIZED_CHAT_ID:
         return
     if flask_process is None:
+        # تشغيل app.py كعملية منفصلة
         flask_process = subprocess.Popen(["python", "app.py"], cwd=BASE_DIR)
         await update.message.reply_text("✅ Server (Flask) Started!")
     else:
