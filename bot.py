@@ -18,6 +18,7 @@ sent_folder = os.path.join(BASE_DIR, "sent")
 metadata_folder = os.path.join(BASE_DIR, "metadata")
 sent_info_folder = os.path.join(BASE_DIR, "infos_sent")
 
+# إنشاء المجلدات
 os.makedirs(images_folder, exist_ok=True)
 os.makedirs(sent_folder, exist_ok=True)
 os.makedirs(metadata_folder, exist_ok=True)
