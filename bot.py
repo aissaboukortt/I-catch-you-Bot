@@ -6,7 +6,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler
 # =========================
 # CONFIG
 # =========================
-BOT_TOKEN = "8612074749:AAGLniCsu_LAn3rUos4aZaqs5mRlz0QxCgE"
+BOT_TOKEN = "8612074749:AAHGvzF43cf5AkwzGhEDJHgvwNRF2KaO2qg"
 AUTHORIZED_CHAT_ID = 5087545397
 
 flask_process = None
