@@ -10,7 +10,7 @@ def run_web(): app_web.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)
 threading.Thread(target=run_web, daemon=True).start()
 
 # 2. إعدادات البوت
-BOT_TOKEN = "8612074749:AAGLniCsu_LAn3rUos4aZaqs5mRlz0QxCgE"
+BOT_TOKEN = "88612074749:AAHGvzF43cf5AkwzGhEDJHgvwNRF2KaO2qg"
 AUTHORIZED_CHAT_ID = 5087545397
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 flask_process = None
