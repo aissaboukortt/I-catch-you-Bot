@@ -224,7 +224,7 @@ app.add_handler(CommandHandler("images", images))
 app.add_handler(CommandHandler("infos", infos))
 
 print("🤖 Bot running...")
-app.run_polling()                "--url",
+app.run_polling()                "--url"
                 "http://localhost:5000"
             ],
             stdout=subprocess.PIPE,
