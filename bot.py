@@ -2,13 +2,13 @@ import os
 import re
 import subprocess
 import time
-from telegram.ext import ApplicationBuilder, CommandHandler by
+from telegram.ext import ApplicationBuilder, CommandHandler
 
 # =========================
 # CONFIG (إعدادات البوت)
 # =========================
-BOT_TOKEN "BOT TOKEN"
-AUTHORIZED_CHAT_ID = chat id 
+BOT_TOKEN = "BOT TOKEN"
+AUTHORIZED_CHAT_ID = 
 
 flask_process = None
 cloudflared_process = None
